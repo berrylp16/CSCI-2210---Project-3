@@ -69,6 +69,7 @@ namespace CSCI_2210___Project_3
             Random randy = new Random();
 
             string csvFilePath = "crate_unloading_log.csv";
+            File.WriteAllText(csvFilePath, "Time,Driver,Company,CrateId,CrateValue,Scenario\n");
 
             for (int time = 1; time <= 100; time++)
             {
@@ -82,40 +83,38 @@ namespace CSCI_2210___Project_3
 
                 foreach (Dock dock in Docks)
                 {
-
+                    if (randy.Next(100) < 20)
+                    {
+                        Truck currentTruck = GenerateRandomTruck();
+                        // Add truck to the dock line
+                        dock.JoinLine(currentTruck);
+                        Console.WriteLine($"Time {time}: Truck joined the line --\nDriver: {currentTruck.Driver}\nCompany: {currentTruck.DeliveryCompany}");
+                    }
                     if (dock.Line.Count > 0)
                     {
-                        Truck currentTruck = dock.Line.Peek();
-                        if (randy.Next(100) < 20)
+                        Truck currentTruck = dock.SendOff();
+                        if (currentTruck != null)
                         {
                             double Price = randy.Next(50, 501);
                             dock.UnloadCrate(Price);
-                            Console.WriteLine($"Time {time}: Unloaded crate from Truck --\nDriver: {currentTruck.Driver}\nCompany: {currentTruck.DeliveryCompany}\nCrate Price: ${Price}");
-                            dock.SendOff();
-
-                            string scenario = dock.Line.Count > 1
-                                ? "More trucks in line"
-                                : dock.Line.Count == 1
-                                ? "No more trucks in line"
-                                : "No more trucks waiting";
-
-                            string logEntry = $"{time},{currentTruck.Driver},{currentTruck.DeliveryCompany},{currentTruck.Unload().Id},{Price},{scenario}\n";
-                            AppendToCsvFile(csvFilePath, logEntry);
-                            static void AppendToCsvFile(string csvfilePath, string logEntry)
+                            Console.WriteLine($"Time {time}: Unloaded crate from Truck --\nDriver: {currentTruck.Driver}\nCompany: {currentTruck.DeliveryCompany}\nCrate Price: ${Price:F2}");
+                            Crate unloadedCrate = currentTruck.Unload();
+                            string scenario = dock.Line.Count > 0
+                                ? "A crate was unloaded, but the truck still has more crates to unload"
+                                : "A crate was unloaded, Another truck is already in the Dock";
+                            if (unloadedCrate != null)
                             {
+                                string logEntry = $"{time},{currentTruck.Driver},{currentTruck.DeliveryCompany},{unloadedCrate.Id},{Price},{scenario}\n";
                                 try
                                 {
-                                    // Append the new data to the CSV file
-                                    using (StreamWriter writer = new StreamWriter(csvfilePath, true))
+                                    using (StreamWriter writer = new StreamWriter(csvFilePath, true))
                                     {
                                         writer.WriteLine(logEntry);
                                     }
-
-                                    Console.WriteLine("Data appended successfully.");
                                 }
                                 catch (Exception ex)
                                 {
-                                    Console.WriteLine($"Error appending data to CSV file: {ex.Message}");
+                                    Console.WriteLine($"Error writing to CSV file: {ex.Message}");
                                 }
                             }
                         }
