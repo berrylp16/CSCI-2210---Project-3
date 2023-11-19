@@ -53,6 +53,17 @@ namespace CSCI_2210___Project_3
             return truck;
         }
 
+        private int GetTruckArrivalProb(int time)
+        {
+            int peakTime = 50;
+            int standardDeviation = 20;
+
+            double prob1 = Math.Exp(-Math.Pow(time - peakTime, 2) / (2 * Math.Pow(standardDeviation, 2)));
+            prob1 *= 100;
+            int prob = Convert.ToInt32(prob1);
+
+            return prob;
+        }
         public void Run()
         {
             Random randy = new Random();
@@ -61,6 +72,7 @@ namespace CSCI_2210___Project_3
 
             for (int time = 1; time <= 100; time++)
             {
+                int prob = GetTruckArrivalProb(time);
                 if (randy.Next(100) < 30)
                 {
                     Truck newTruck = GenerateRandomTruck();
