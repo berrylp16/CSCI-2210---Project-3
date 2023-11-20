@@ -10,6 +10,9 @@ namespace CSCI_2210___Project_3
     class Program
     {
 
+        /// <summary>
+        /// main method for executing program
+        /// </summary>
         static void Main()
         {
             int dockCount = 5;

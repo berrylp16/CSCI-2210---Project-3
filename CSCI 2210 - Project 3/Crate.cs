@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CSCI_2210___Project_3
 {
+    /// <summary>
+    /// crate class to put in the trucks
+    /// </summary>
     public class Crate
     {
         public int Id { get; }

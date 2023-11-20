@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CSCI_2210___Project_3
 {
+   /// <summary>
+   /// truck class to make methods on how to load/unload crates
+   /// </summary>
     public class Truck
     {
         public string Driver { get; }
@@ -15,7 +18,7 @@ namespace CSCI_2210___Project_3
        public Truck(string driver, string deliveryCompany)
         {
             Driver = driver;
-            deliveryCompany = DeliveryCompany;
+            DeliveryCompany = deliveryCompany;
             Trailer = new Stack<Crate>();
             
         }
